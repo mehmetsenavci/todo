@@ -18,6 +18,7 @@ namespace API.Profiles
                 src => src.MapFrom(s => $"{s.FirstName} {s.LastName}"));
 
             CreateMap<UserForCreationDto, User>();
+            CreateMap<UserForFullUpdateDto, User>();
         }
     }
 }

@@ -23,21 +23,22 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(User user)
+        public async Task<IActionResult> CreateUser(UserForCreationDto user)
         {
             if (user == null)
             {
                 return BadRequest();
             }
 
-            _repo.CreateUser(user);
+            var userEntity = _mapper.Map<UserForCreationDto, User>(user);
+            _repo.CreateUser(userEntity);
             await _repo.SaveAsync();
 
-            return CreatedAtAction("GetUser", new { userId = user.UserId }, user);
+            return CreatedAtAction("GetUser", new { userId = userEntity.UserId }, userEntity);
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> GetAllUsers()
+        public async Task<ActionResult<UserDto>> GetAllUsers()
         {
             var usersFromRepo = await _repo.GetAllUsersAsync();
             
@@ -45,7 +46,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{userId}", Name = "GetUser")]
-        public async Task<ActionResult<User>> GetUser(Guid userId)
+        public async Task<ActionResult<UserDto>> GetUser(Guid userId)
         {
             var userFromRepo = await _repo.GetUserAsync(userId);
             if (userFromRepo == null)
@@ -53,6 +54,21 @@ namespace API.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<User, UserDto>(userFromRepo));
+        }
+
+        [HttpPut("{userId}")]
+        public async Task<ActionResult> UpdateUser(Guid userId, UserForFullUpdateDto user)
+        {
+            var userFromRepo = await _repo.GetUserAsync(userId);
+            if (userFromRepo == null)
+            {
+                return NoContent();
+            }
+            _mapper.Map(user, userFromRepo);
+            await _repo.SaveAsync();
+
+            return NoContent();
+
         }
 
         [HttpDelete("{userId}")]
@@ -64,7 +80,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            _repo.DeleteUserAsync(userFromRepo);
+            _repo.DeleteUser(userFromRepo);
             await _repo.SaveAsync();
             return NoContent();
         }

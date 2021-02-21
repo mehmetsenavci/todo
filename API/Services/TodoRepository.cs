@@ -30,7 +30,7 @@ namespace API.Services
             throw new NotImplementedException();
         }
 
-        public void DeleteUserAsync(User user)
+        public void DeleteUser(User user)
         {
             _context.Users.Remove(user);
         }
