@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using API.Entities;
 
-namespace API.Entities
+namespace API.DTOs
 {
-    public class User : Timestamps
+    public class UserForCreationDto
     {
-        [Key]
-        public Guid UserId { get; set; } = Guid.NewGuid();
+        
         [Required]
         public string FirstName { get; set; }
         [Required]
@@ -19,10 +19,6 @@ namespace API.Entities
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-
-        public ICollection<Todo> Todos { get; set; }
-        
-
 
     }
 }
