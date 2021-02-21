@@ -75,7 +75,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteUser(Guid userId)
         {
             var userFromRepo = await _repo.GetUserAsync(userId);
-            if (userId == null) 
+            if (userFromRepo == null) 
             {
                 return NotFound();
             }
@@ -83,6 +83,36 @@ namespace API.Controllers
             _repo.DeleteUser(userFromRepo);
             await _repo.SaveAsync();
             return NoContent();
+        }
+
+        [HttpPost("{userId}/todos")]
+        public async Task<IActionResult> CreateTodoForUser(Guid userId, Todo todo)
+        {
+            var userFromRepo = await _repo.GetUserAsync(userId);
+            if (userFromRepo == null)
+            {
+                return NoContent();
+            }
+            
+            _repo.CreateTodoForUser(userFromRepo, todo);
+            await _repo.SaveAsync();
+            return CreatedAtAction(
+                "GetTodo", 
+                new {userId = userId, todoId = todo.TodoId},
+                todo);
+        }
+
+        [HttpGet("{userId}/todos/{todoId}", Name="GetTodo")]
+        public async Task<ActionResult<Todo>> GetTodoForUser(Guid userId, Guid todoId)
+        {
+            var userFromRepo = await _repo.GetUserAsync(userId);
+            if (userFromRepo == null)
+            {
+                return NoContent();
+            }
+            var todoFromRepo = await _repo.GetTodoForUserAsync(userFromRepo, todoId);
+
+            return Ok(todoFromRepo);
         }
     }
 }

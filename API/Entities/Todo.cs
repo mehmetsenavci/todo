@@ -6,7 +6,7 @@ namespace API.Entities
     public class Todo : Timestamps
     {
         [Key]
-        public Guid TodoId { get; set; }
+        public Guid TodoId { get; set; } = Guid.NewGuid();
         [Required]
         public string Desription { get; set; }
         [Required]

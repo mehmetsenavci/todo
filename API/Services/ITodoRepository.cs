@@ -14,8 +14,8 @@ namespace API.Services
         Task UppdateUserAsync(Guid userId, User user);
         void DeleteUser(User user);
         Task<IEnumerable<Todo>> GetAllTodosForUserAsync(Guid userId);
-        Task<Todo> GetTodoForUserAsync(Guid userId, Guid todoId);
-        Task CreateTodoForUser(User userId, Todo todo);
+        Task<Todo> GetTodoForUserAsync(User user, Guid todoId);
+        void CreateTodoForUser(User user, Todo todo);
         Task UpdateTodoForUserAsync(Guid userId, Todo todo);
         Task DeleteTodoForUserAsync(Guid userId, Guid todoId);
 

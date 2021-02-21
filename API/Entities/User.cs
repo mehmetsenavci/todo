@@ -20,7 +20,7 @@ namespace API.Entities
         [Required]
         public string Password { get; set; }
 
-        public ICollection<Todo> Todos { get; set; }
+        public ICollection<Todo> Todos { get; set; } = new List<Todo>();
         
 
 

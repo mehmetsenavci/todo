@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Context;
 using API.Entities;
@@ -15,9 +16,10 @@ namespace API.Services
             _context = context;
 
         }
-        public Task CreateTodoForUser(User userId, Todo todo)
+        public void CreateTodoForUser(User user, Todo todo)
         {
-            throw new NotImplementedException();
+            _context.Todos.Add(todo);
+            user.Todos.Add(todo);
         }
 
         public void CreateUser(User user)
@@ -45,9 +47,10 @@ namespace API.Services
             return await _context.Users.ToListAsync();
         }
 
-        public Task<Todo> GetTodoForUserAsync(Guid userId, Guid todoId)
+        public async Task<Todo> GetTodoForUserAsync(User user, Guid todoId)
         {
-            throw new NotImplementedException();
+            return await _context.Entry(user).Collection(u => u.Todos)
+                                    .Query().Where(u => u.TodoId == todoId).FirstOrDefaultAsync();
         }
 
         public async Task<User> GetUserAsync(Guid userId)
