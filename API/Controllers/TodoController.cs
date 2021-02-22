@@ -97,12 +97,12 @@ namespace API.Controllers
             _repo.CreateTodoForUser(userFromRepo, todo);
             await _repo.SaveAsync();
             return CreatedAtAction(
-                "GetTodo", 
+                nameof(GetTodoForUser), 
                 new {userId = userId, todoId = todo.TodoId},
                 todo);
         }
 
-        [HttpGet("{userId}/todos/{todoId}", Name="GetTodo")]
+        [HttpGet("{userId}/todos/{todoId}")]
         public async Task<ActionResult<Todo>> GetTodoForUser(Guid userId, Guid todoId)
         {
             var userFromRepo = await _repo.GetUserAsync(userId);
@@ -113,6 +113,55 @@ namespace API.Controllers
             var todoFromRepo = await _repo.GetTodoForUserAsync(userFromRepo, todoId);
 
             return Ok(todoFromRepo);
+        }
+
+        [HttpGet("{userId}/todos")]
+        public async Task<ActionResult<IEnumerable<Todo>>> GetAllTodosForUser(Guid userId)
+        {
+            var userFromRepo = await _repo.GetUserAsync(userId);
+            if (userFromRepo == null)
+            {
+                return NotFound();
+            }
+            
+            var todosFromRepo = await _repo.GetAllTodosForUserAsync(userFromRepo);
+
+            return Ok(todosFromRepo);
+        }
+
+        [HttpPut("{userId}/todos/{todoId}")]
+        public async Task<IActionResult> UpdateTodoForUser(Guid userId, Guid todoId, Todo todo)
+        {
+            var userFromRepo = await _repo.GetUserAsync(userId);
+            if (userFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var todoFromRepo = await _repo.GetTodoForUserAsync(userFromRepo, todoId);
+
+            todoFromRepo.Desription = todo.Desription;
+            todoFromRepo.IsDone = todo.IsDone;
+
+            await _repo.SaveAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{userId}/todos/{todoId}")]
+        public async Task<IActionResult> DeleteTodoForUser(Guid userId, Guid todoId)
+        {
+            var userFromRepo = await _repo.GetUserAsync(userId);
+            if (userFromRepo == null)
+            {
+                return NotFound();
+            }
+            var todoFromRepo = await _repo.GetTodoForUserAsync(userFromRepo, todoId);
+
+            _repo.DeleteTodoForUserAsync(todoFromRepo);
+            await _repo.SaveAsync();
+
+            return NoContent();
+
         }
     }
 }

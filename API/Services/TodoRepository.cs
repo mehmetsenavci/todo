@@ -27,9 +27,9 @@ namespace API.Services
             _context.Add(user);
         }
 
-        public Task DeleteTodoForUserAsync(Guid userId, Guid todoId)
+        public void DeleteTodoForUserAsync(Todo todo)
         {
-            throw new NotImplementedException();
+            _context.Todos.Remove(todo);
         }
 
         public void DeleteUser(User user)
@@ -37,9 +37,10 @@ namespace API.Services
             _context.Users.Remove(user);
         }
 
-        public Task<IEnumerable<Todo>> GetAllTodosForUserAsync(Guid userId)
+        public async Task<IEnumerable<Todo>> GetAllTodosForUserAsync(User user)
         {
-            throw new NotImplementedException();
+            return await _context.Entry(user).Collection(u => u.Todos).Query().ToListAsync();
+                                    
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()

@@ -16,6 +16,5 @@ namespace API.DTOs
         
         public string Password { get; set; }
 
-        public ICollection<Todo> Todos { get; set; }
     }
 }

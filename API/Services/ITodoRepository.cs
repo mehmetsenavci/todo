@@ -13,11 +13,11 @@ namespace API.Services
         Task SaveAsync();
         Task UppdateUserAsync(Guid userId, User user);
         void DeleteUser(User user);
-        Task<IEnumerable<Todo>> GetAllTodosForUserAsync(Guid userId);
+        Task<IEnumerable<Todo>> GetAllTodosForUserAsync(User user);
         Task<Todo> GetTodoForUserAsync(User user, Guid todoId);
         void CreateTodoForUser(User user, Todo todo);
         Task UpdateTodoForUserAsync(Guid userId, Todo todo);
-        Task DeleteTodoForUserAsync(Guid userId, Guid todoId);
+        void DeleteTodoForUserAsync(Todo todo);
 
     }
 }
