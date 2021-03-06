@@ -10,7 +10,7 @@ namespace API.Services
 {
     public class TodoRepository : ITodoRepository
     {
-        public TodoContext _context { get; }
+        private readonly TodoContext _context;
         public TodoRepository(TodoContext context)
         {
             _context = context;
@@ -34,13 +34,15 @@ namespace API.Services
 
         public void DeleteUser(User user)
         {
-            _context.Users.Remove(user);
+            var userToBeDeleted = _context.Users.Where(u => u.UserId == user.UserId)
+                .Include(u => u.Todos).First();
+            _context.Users.Remove(userToBeDeleted);
         }
 
         public async Task<IEnumerable<Todo>> GetAllTodosForUserAsync(User user)
         {
             return await _context.Entry(user).Collection(u => u.Todos).Query().ToListAsync();
-                                    
+
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
@@ -64,14 +66,14 @@ namespace API.Services
             await _context.SaveChangesAsync();
         }
 
-        public Task UpdateTodoForUserAsync(Guid userId, Todo todo)
+        public void UpdateTodoForUserAsync(Guid userId, Todo todo)
         {
             throw new NotImplementedException();
         }
 
-        public Task UppdateUserAsync(Guid userId, User user)
+        public void UppdateUserAsync(Guid userId, User user)
         {
-            throw new NotImplementedException();
+            _context.Entry(user).State = EntityState.Modified;
         }
     }
 }

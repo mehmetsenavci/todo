@@ -32,7 +32,7 @@ namespace API.Context
                 {
                     ((Timestamps)item.Entity).CreatedAt = DateTime.Now;
                 }
-                else if (item.State == EntityState.Modified)
+                if (item.State == EntityState.Modified)
                 {
                     ((Timestamps)item.Entity).UpdatedAt = DateTime.Now;
                 }
