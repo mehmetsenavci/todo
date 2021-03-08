@@ -30,11 +30,23 @@ namespace API.Context
             {
                 if (item.State == EntityState.Added)
                 {
-                    ((Timestamps)item.Entity).CreatedAt = DateTime.Now;
+                    ((Timestamps)item.Entity).CreatedAt = DateTime.Now;                    
+                    if (item.Entity.GetType() == typeof(User))
+                    {
+                        ((User)item.Entity).Password = BCrypt.Net.BCrypt.HashPassword(((User)item.Entity).Password);
+                    }
                 }
-                if (item.State == EntityState.Modified)
+                else if (item.State == EntityState.Modified)
                 {
                     ((Timestamps)item.Entity).UpdatedAt = DateTime.Now;
+                    if (item.Entity.GetType() == typeof(User))
+                    {
+                        if (item.Property("Password").IsModified)
+                        {
+                            ((User)item.Entity).Password = BCrypt.Net.BCrypt.HashPassword(((User)item.Entity).Password);
+                        }
+                    }
+
                 }
             }
 
